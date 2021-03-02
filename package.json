@@ -1,0 +1,24 @@
+{
+  "name": "assignment-push",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hollisjamison/assignment-push.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hollisjamison/assignment-push/issues"
+  },
+  "homepage": "https://github.com/hollisjamison/assignment-push#readme",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "shelljs": "^0.8.4"
+  }
+}
