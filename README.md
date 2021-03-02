@@ -8,7 +8,9 @@ A simple NodeJS application that takes a repo and distributes it to a student li
 ## Installation
 1. Clone the repo
 > git clone https://github.com/hollisjamison/assignment-push.git
-2. Install dependecies with npm
+2. Move into the repo folder
+> cd assignment-push
+3. Install dependecies with npm
 > npm install
 
 ## Usage
