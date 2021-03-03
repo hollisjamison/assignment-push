@@ -1,6 +1,9 @@
 // Import Student List
 const { studentList } = require("./studentList");
 
+// Import inquirer to make shell interactive
+const inquirer = require("inquirer");
+
 // Import env file and all variables
 require("dotenv").config();
 const assignmentUrl = process.env.ASSIGNMENT;
@@ -59,7 +62,33 @@ const pushToStudents = () => {
   });
 };
 
-// Now call the functions in order
-checkRepos();
-cloneAssignment();
-pushToStudents();
+// Function that controls interactivity
+const promptUser = () => {
+  // Prompt the user to see what kind of app needs to run
+  inquirer
+    .prompt([
+      {
+        name: "option",
+        type: "list",
+        message: "Please select your operation.",
+        choices: [
+          "1: Check if student repos exist.",
+          "2: Push assignment repo to students.",
+          "3: Exit application.",
+        ],
+      },
+    ])
+    // Then either check the repos or clone/push the assignment
+    .then((answer) => {
+      if (answer.option == "1: Check if student repos exist.") {
+        checkRepos();
+      } else if (answer.option == "2: Push assignment repo to students.") {
+        cloneAssignment();
+        pushToStudents();
+      } else {
+        return;
+      }
+    });
+};
+
+promptUser();
