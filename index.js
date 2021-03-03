@@ -10,12 +10,50 @@ const assignmentUrl = process.env.ASSIGNMENT;
 const repoName = process.env.REPONAME;
 const token = process.env.TOKEN;
 const githubUser = process.env.USERNAME;
+const slackToken = process.env.SLACKTOKEN;
 
 // Import Axios for HTTP requests
 const axios = require("axios");
 
 // Import shelljs to run bash (git) commands
 const shell = require("shelljs");
+
+// Import Slack API to send messages to students
+const { WebClient } = require("@slack/web-api");
+const slack = new WebClient(slackToken);
+
+const checkReposSilent = () => {
+  // create for loop to check all student repos and see if they exist
+  studentList.forEach((student) => {
+    // Do an HTTP get on each students supposed repo
+    axios.get(`https://github.com/${student.github}/${repoName}`).then(
+      (response) => {
+        // Do nothing if you get an HTTP 200
+      },
+      (error) => {
+        console.log(`Student ${student.github} has not made the repo yet.`);
+      }
+    );
+  });
+};
+
+const checkReposAlert = () => {
+  // create for loop to check all student repos and see if they exist
+  studentList.forEach((student) => {
+    // Do an HTTP get on each students supposed repo
+    axios.get(`https://github.com/${student.github}/${repoName}`).then(
+      (response) => {
+        // Do nothing if you get an HTTP 200
+      },
+      (error) => {
+        sendMessage(student.slack);
+        console.log(
+          `Student ${student.github} has not made the repo yet. Alert sent.`
+        );
+      }
+    );
+  });
+};
 
 // Function to clone assignment locally
 const cloneAssignment = () => {
@@ -36,26 +74,11 @@ const cloneAssignment = () => {
   shell.exec("git checkout -b main");
 };
 
-const checkRepos = () => {
-  // create for loop to check all student repos and see if they exist
-  studentList.forEach((student) => {
-    // Do an HTTP get on each students supposed repo
-    axios.get(`https://github.com/${student}/${repoName}`).then(
-      (response) => {
-        // Do nothing if you get an HTTP 200
-      },
-      (error) => {
-        console.log(`Student ${student} has not made the repo yet.`);
-      }
-    );
-  });
-};
-
 const pushToStudents = () => {
   // Create a forloop to go through each student
   studentList.forEach((student) => {
     // First create a URL using the student's username and the repo name
-    const studentUrl = `https://github.com/${student}/${repoName}.git`;
+    const studentUrl = `https://github.com/${student.github}/${repoName}.git`;
 
     // Force a push of the assignment main repo
     shell.exec(`git push ${studentUrl} --force`);
@@ -72,23 +95,47 @@ const promptUser = () => {
         type: "list",
         message: "Please select your operation.",
         choices: [
-          "1: Check if student repos exist.",
-          "2: Push assignment repo to students.",
-          "3: Exit application.",
+          "1: Privately check if student repos exist. (No Slack message reminder).",
+          "2: Check if student repos exist. (With Slack message reminder).",
+          "3: Push assignment repo to students.",
+          "4: Exit application.",
         ],
       },
     ])
     // Then either check the repos or clone/push the assignment
     .then((answer) => {
-      if (answer.option == "1: Check if student repos exist.") {
-        checkRepos();
-      } else if (answer.option == "2: Push assignment repo to students.") {
+      // If option 1 is selected so a silent check.
+      if (
+        answer.option ==
+        "1: Privately check if student repos exist. (No Slack message reminder)."
+      ) {
+        checkReposSilent();
+        // If Option 2 is selected do an alerting check.
+      } else if (
+        answer.option ==
+        "2: Check if student repos exist. (With Slack message reminder)."
+      ) {
+        checkReposAlert();
+        // If option 3 is selected then clone the assignment then push.
+      } else if (answer.option == "3: Push assignment repo to students.") {
         cloneAssignment();
         pushToStudents();
+        // If option 4 is selected then exit the app.
       } else {
         return;
       }
     });
 };
 
+const sendMessage = (slackId) => {
+  // Connect to slack and post the reminder message using the slackId provided.
+  (async () => {
+    const result = await slack.chat.postMessage({
+      channel: slackId,
+      text: `Your repo was not found. Please create the following repo on Github. If you have created the repo please check the spelling or make the repo public. \n \n *Repo Name:* \n \`${repoName}\``,
+    });
+  })();
+};
+
+// When the app runs simply prompt the user.
 promptUser();

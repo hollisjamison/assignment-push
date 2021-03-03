@@ -20,8 +20,9 @@ A simple NodeJS application that takes a repo and distributes it to a student li
     REPONAME=repo-name
     USERNAME=hollisjamison@gmail.com
     TOKEN=GITHUB-ACCESS-TOKEN
+    SLACKTOKEN=SLACK-OAUTH-TOKEN
 ```
-2. Customize the .env file by adding your ideal assignment URL, repo name, and add in your GitHub username and a personal access token
+2. Customize the .env file by adding your information. Make sure to update the assignment and repo name on each run.
 3. Edit the studentList.js with an array of the list of your student's GitHub usernames.
 4. Run the application
 >npm start
