@@ -1,5 +1,7 @@
 // Import Student List
-const { studentList } = require("./studentList");
+const {
+  studentList
+} = require("./studentList");
 
 // Import inquirer to make shell interactive
 const inquirer = require("inquirer");
@@ -19,7 +21,9 @@ const axios = require("axios");
 const shell = require("shelljs");
 
 // Import Slack API to send messages to students
-const { WebClient } = require("@slack/web-api");
+const {
+  WebClient
+} = require("@slack/web-api");
 const slack = new WebClient(slackToken);
 
 const checkReposSilent = () => {
@@ -28,10 +32,10 @@ const checkReposSilent = () => {
     // Do an HTTP get on each students supposed repo
     axios.get(`https://github.com/${student.github}/${repoName}`).then(
       (response) => {
-        // Do nothing if you get an HTTP 200
+        console.log(`\x1b[32m ${student.github} has made their repo!`)
       },
       (error) => {
-        console.log(`Student ${student.github} has not made the repo yet.`);
+        console.log(`\x1b[31m ${student.github} has not made the repo yet.`);
       }
     );
   });
@@ -43,13 +47,11 @@ const checkReposAlert = () => {
     // Do an HTTP get on each students supposed repo
     axios.get(`https://github.com/${student.github}/${repoName}`).then(
       (response) => {
-        // Do nothing if you get an HTTP 200
+        console.log(`\x1b[32m ${student.github} has made their repo!`);
       },
       (error) => {
         sendMessage(student.slack);
-        console.log(
-          `Student ${student.github} has not made the repo yet. Alert sent.`
-        );
+        console.log(`\x1b[31m ${student.github} has not made the repo yet. Alert sent.`);
       }
     );
   });
@@ -89,19 +91,17 @@ const pushToStudents = () => {
 const promptUser = () => {
   // Prompt the user to see what kind of app needs to run
   inquirer
-    .prompt([
-      {
-        name: "option",
-        type: "list",
-        message: "Please select your operation.",
-        choices: [
-          "1: Privately check if student repos exist. (No Slack message reminder).",
-          "2: Check if student repos exist. (With Slack message reminder).",
-          "3: Push assignment repo to students.",
-          "4: Exit application.",
-        ],
-      },
-    ])
+    .prompt([{
+      name: "option",
+      type: "list",
+      message: "Please select your operation.",
+      choices: [
+        "1: Privately check if student repos exist. (No Slack message reminder).",
+        "2: Check if student repos exist. (With Slack message reminder).",
+        "3: Push assignment repo to students.",
+        "4: Exit application.",
+      ],
+    }, ])
     // Then either check the repos or clone/push the assignment
     .then((answer) => {
       // If option 1 is selected so a silent check.
