@@ -34,10 +34,10 @@ const slack = new WebClient(slackToken);
 
 repoDetails = repoDetails.filter(repoDetail => !repoDetail.skip);
 
-function findRepoDetailsByName(repos, selectedRepos) {
+function findRepoDetailsByName(repos, repoNames) {
 
   let allReposFiltered = [];
-  selectedRepos.forEach(repoName => {
+  repoNames.forEach(repoName => {
     let reposFiltered = repos.filter(repo => repo.name === repoName);
     if (reposFiltered.length === 1) {
       allReposFiltered.push(reposFiltered[0]);
@@ -69,7 +69,7 @@ const checkRepo = (student, repoName, slackAlert, callback, failureCallBack) => 
     )
 }
 
-const checkRepos = (reposSelected, i, slackAlert) => {
+const checkReposContinuously = (reposSelected, i, slackAlert) => {
   // create for loop to check all student repos and see if they exist
 
   const repoName = reposSelected[i].name;
@@ -86,7 +86,7 @@ const checkRepos = (reposSelected, i, slackAlert) => {
   Promise.allSettled(promises).then((results) => {
     i++;
     if (reposSelected[i]) {
-      checkRepos(reposSelected, i, slackAlert);
+      checkReposContinuously(reposSelected, i, slackAlert);
     } else {
       console.log(`\n\x1b[33m =============== FINISHED ==============`);
     }
@@ -240,11 +240,11 @@ const promptUser = () => {
 
       if (
         answers.option == "1: Privately check if student repos exist. (No Slack message reminder).") {
-        checkRepos(allReposFiltered, 0, false);
+        checkReposContinuously(allReposFiltered, 0, false);
 
         // If Option 2 is selected do an alerting check.
       } else if (answers.option == "2: Check if student repos exist. (With Slack message reminder).") {
-        checkRepos(allReposFiltered, 0, true);
+        checkReposContinuously(allReposFiltered, 0, true);
 
         // If option 3 is selected then clone the assignment then push.
       } else if (answers.option == "3: Push assignment repo to students.") {
