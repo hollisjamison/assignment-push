@@ -1,11 +1,7 @@
 // Import Student List
-const {
-  studentList
-} = require("./studentList");
+const { studentList } = require("./studentList");
 
-let {
-  repoDetails
-} = require("./repos.js");
+let { repoDetails } = require("./repos.js");
 
 // Import inquirer to make shell interactive
 const inquirer = require("inquirer");
@@ -27,9 +23,8 @@ const axios = require("axios");
 const shell = require("shelljs");
 
 // Import Slack API to send messages to students
-const {
-  WebClient
-} = require("@slack/web-api");
+const { WebClient } = require("@slack/web-api");
+
 const slack = new WebClient(slackToken);
 
 repoDetails = repoDetails.filter(repoDetail => !repoDetail.skip);
