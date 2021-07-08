@@ -91,10 +91,10 @@ const cloneAndPushRepos = (studentList, allSelectedRepos, i) => {
   shell.cd(`${repoName}`);
   let { stdoutCheckout, stderrCheckout, codeCheckout } = shell.exec("git checkout -b main", { silent: true });
   if (stderrCheckout) {
-    console.log(`Could not crete and switch to main branch`, stderrCheckout);
+    console.log(`Could not create and switch to main branch`, stderrCheckout);
   }
 
-  console.log(`\n ===== Going to try pushing repo '${repoName}' ====`);
+  
   pushRepoToStudents(studentList, repoName, allSelectedRepos, i);
 
   shell.exec("cd ..");
@@ -105,6 +105,7 @@ const cloneAndPushRepos = (studentList, allSelectedRepos, i) => {
 
 const pushRepoToStudents = (studentList, repoName, allSelectedRepos, i) => {
 
+  console.log(`\n ===== Going to try pushing repo '${repoName}' ====`);
   // Create a forloop to go through each student
   let repoCheckPromisesPerStudent = [];
   studentList.forEach((student) => {
