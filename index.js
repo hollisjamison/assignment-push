@@ -229,35 +229,37 @@ const handlePromptAnswer = (answers) => {
   processByOption(answers.option, allReposFiltered);
 }
 
+const promptsTypes = [
+  {
+    name: "repoOptions",
+    type: "checkbox",
+    message: "Please select repos you want to check",
+    choices: ["exit", "all", new inquirer.Separator()].concat(repoDetails),
+    default: ["all"]
+  },
+  {
+    name: "option",
+    type: "list",
+    message: "Please select your operation.",
+    when: (answers) => {
+      if (answers.repoOptions == "none" || !answers.repoOptions.length) {
+        return false;
+      }
+      return true;
+    },
+    choices: [
+      "1: Privately check if student repos exist. (No Slack message reminder).",
+      "2: Check if student repos exist. (With Slack message reminder).",
+      "3: Push assignment repo to students.",
+      "4: Exit application.",
+    ],
+  }]
+
 // Function that controls interactivity
 const promptUser = () => {
   // Prompt the user to see what kind of app needs to run
   inquirer
-    .prompt([
-      {
-        name: "repoOptions",
-        type: "checkbox",
-        message: "Please select repos you want to check",
-        choices: ["exit", "all", new inquirer.Separator()].concat(repoDetails),
-        default: ["all"]
-      },
-      {
-        name: "option",
-        type: "list",
-        message: "Please select your operation.",
-        when: (answers) => {
-          if (answers.repoOptions == "none" || !answers.repoOptions.length) {
-            return false;
-          }
-          return true;
-        },
-        choices: [
-          "1: Privately check if student repos exist. (No Slack message reminder).",
-          "2: Check if student repos exist. (With Slack message reminder).",
-          "3: Push assignment repo to students.",
-          "4: Exit application.",
-        ],
-      },])
+    .prompt(promptsTypes)
     // Then either check the repos or clone/push the assignment
     .then(handlePromptAnswer);
 };
