@@ -34,7 +34,7 @@ const slack = new WebClient(slackToken);
 
 repoDetails = repoDetails.filter(repoDetail => !repoDetail.skip);
 
-function matchedRepoDetails(repos, selectedRepos) {
+function findRepoDetailsByName(repos, selectedRepos) {
 
   let allReposFiltered = [];
   selectedRepos.forEach(repoName => {
@@ -229,7 +229,7 @@ const promptUser = () => {
           reposSelectedByName.splice(exitSelected, 1);
         }
 
-        allReposFiltered = matchedRepoDetails(repoDetails, reposSelectedByName);
+        allReposFiltered = findRepoDetailsByName(repoDetails, reposSelectedByName);
 
         if (allReposFiltered.length !== reposSelectedByName.length) {
           console.log(`Some repo URL is not found, found items include: [${allReposFiltered}] and repoNames selected were [${reposSelectedByName}]`)
