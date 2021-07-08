@@ -16,9 +16,9 @@ dotenv.config();
 
 const opt = { debug: true }
 //const assignments = JSON.parse(dotenv.parse(Buffer.from(process.env.ASSIGNMENTS), opt)["REPOS"]);
-const token = processByOption.env.TOKEN;
-const githubUser = processByOption.env.GITUSER;
-const slackToken = processByOption.env.SLACKTOKEN;
+const token = process.env.TOKEN;
+const githubUser = process.env.GITUSER;
+const slackToken = process.env.SLACKTOKEN;
 
 // Import Axios for HTTP requests
 const axios = require("axios");
