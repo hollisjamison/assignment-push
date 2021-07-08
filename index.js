@@ -74,7 +74,7 @@ const checkReposContinuously = (reposSelected, i, slackAlert) => {
 
   const repoName = reposSelected[i].name;
 
-  console.log(`\x1b[33m ======= checking if '${repoName}' repo exists =======\n`);
+  console.log(`\n\x1b[33m ======= checking if '${repoName}' repo exists =======\n`);
 
   let promises = [];
   studentList.forEach((student) => {
@@ -88,7 +88,7 @@ const checkReposContinuously = (reposSelected, i, slackAlert) => {
     if (reposSelected[i]) {
       checkReposContinuously(reposSelected, i, slackAlert);
     } else {
-      console.log(`\n\x1b[33m =============== FINISHED ==============`);
+      console.log(`\n\x1b[33m =============== FINISHED ==============\n`);
     }
 
   });
@@ -100,7 +100,7 @@ const cloneAndPushRepos = (allSelectedRepos, i) => {
   let repoUrl = allSelectedRepos[i].url;
 
   console.log(`\n ==================================================`);
-  console.log(`\n===== Going to try cloning repo '${repoName}' ====`);
+  console.log(`\n ===== Going to try cloning repo '${repoName}' ====`);
 
   let { stdoutClone, stderrClone, codeClone } = shell.exec(`git clone ${repoUrl}`, { silent: true });
   if (stderrClone) {
@@ -114,7 +114,7 @@ const cloneAndPushRepos = (allSelectedRepos, i) => {
     console.log(`Could not crete and switch to main branch`, stderrCheckout);
   }
 
-  console.log(`\n===== Going to try pushing repo '${repoName}' ====`);
+  console.log(`\n ===== Going to try pushing repo '${repoName}' ====`);
   pushRepoToStudents(repoName, allSelectedRepos[i + 1]);
 
   shell.exec("cd ..");
@@ -130,10 +130,10 @@ const cloneAndPushRepos = (allSelectedRepos, i) => {
 const pushRepoToStudents = (repoName, hasNext) => {
 
   // Create a forloop to go through each student
-  let promises = [];
+  let repoCheckPromisesPerStudent = [];
   studentList.forEach((student) => {
 
-    promises.push(checkRepo(student, repoName, false, () => {
+    repoCheckPromisesPerStudent.push(checkRepo(student, repoName, false, () => {
       // First create a URL using the student's username and the repo name
       const studentUrl = `https://github.com/${student.github}/${repoName}.git`;
 
@@ -148,7 +148,7 @@ const pushRepoToStudents = (repoName, hasNext) => {
 
   });
 
-  Promise.allSettled(promises).then((result) => {
+  Promise.allSettled(repoCheckPromisesPerStudent).then((result) => {
     if (!hasNext) {
       console.log(`\n \x1b[32m ============ FINISHED pushing ${repoName} ============`);
     }
@@ -187,8 +187,46 @@ const processByOption = (option, allReposFiltered) => {
     setupRepos(allReposFiltered);
 
     // If option 4 is selected then exit the app.
-  } 
+  }
   return;
+}
+
+const handlePromptAnswer = (answers) => {
+
+  let reposSelectedByName = answers.repoOptions;
+  let allReposFiltered = repoDetails;
+
+  console.log(` Repos selected: ${answers.repoOptions}\n`);
+  // If option 1 is selected so a silent check.
+  if (reposSelectedByName == "exit") {
+    return;
+
+  } else if (!reposSelectedByName.length) {
+    console.log(`\x1b[33m Nothing was selected, Exiting`);
+    return;
+
+  } else if (reposSelectedByName.indexOf("all") > -1) {
+    if (reposSelectedByName.length > 1) {
+      console.log(`\x1b[33m All Repos selected, will ignore other options`);
+    }
+
+  } else {
+    let exitSelected = reposSelectedByName.indexOf("exit");
+    if (exitSelected > -1 && reposSelectedByName.length > 1) {//dont really need to check size here again
+      console.log(`\x1b[33m Exit was selected along specific repos, ignoring Exit`);
+
+      reposSelectedByName.splice(exitSelected, 1);
+    }
+
+    allReposFiltered = findRepoDetailsByName(repoDetails, reposSelectedByName);
+
+    if (allReposFiltered.length !== reposSelectedByName.length) {
+      console.log(`Some repo URL is not found, found items include: [${allReposFiltered}] and repoNames selected were [${reposSelectedByName}]`)
+      return;
+    }
+  }
+
+  processByOption(answers.option, allReposFiltered);
 }
 
 // Function that controls interactivity
@@ -221,43 +259,7 @@ const promptUser = () => {
         ],
       },])
     // Then either check the repos or clone/push the assignment
-    .then((answers) => {
-
-      let reposSelectedByName = answers.repoOptions;
-      let allReposFiltered = repoDetails;
-
-      console.log(` Repos selected: ${answers.repoOptions}\n`);
-      // If option 1 is selected so a silent check.
-      if (reposSelectedByName == "exit") {
-        return;
-
-      } else if (!reposSelectedByName.length) {
-        console.log(`\x1b[33m Nothing was selected, Exiting`);
-        return;
-
-      } else if (reposSelectedByName.indexOf("all") > -1) {
-        if (reposSelectedByName.length > 1) {
-          console.log(`\x1b[33m All Repos selected, will ignore other options`);
-        }
-
-      } else {
-        let exitSelected = reposSelectedByName.indexOf("exit");
-        if (exitSelected > -1 && reposSelectedByName.length > 1) {//dont really need to check size here again
-          console.log(`\x1b[33m Exit was selected along specific repos, ignoring Exit`);
-
-          reposSelectedByName.splice(exitSelected, 1);
-        }
-
-        allReposFiltered = findRepoDetailsByName(repoDetails, reposSelectedByName);
-
-        if (allReposFiltered.length !== reposSelectedByName.length) {
-          console.log(`Some repo URL is not found, found items include: [${allReposFiltered}] and repoNames selected were [${reposSelectedByName}]`)
-          return;
-        }
-      }
-      
-      processByOption(answers.option, allReposFiltered);
-    });
+    .then(handlePromptAnswer);
 };
 
 const sendMessage = (slackId, repoName) => {
