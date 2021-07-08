@@ -16,9 +16,9 @@ dotenv.config();
 
 const opt = { debug: true }
 //const assignments = JSON.parse(dotenv.parse(Buffer.from(process.env.ASSIGNMENTS), opt)["REPOS"]);
-const token = process.env.TOKEN;
-const githubUser = process.env.GITUSER;
-const slackToken = process.env.SLACKTOKEN;
+const token = processByOption.env.TOKEN;
+const githubUser = processByOption.env.GITUSER;
+const slackToken = processByOption.env.SLACKTOKEN;
 
 // Import Axios for HTTP requests
 const axios = require("axios");
@@ -173,7 +173,7 @@ const setupRepos = (allSelectedRepos) => {
 };
 
 
-const process = (option, allReposFiltered) => {
+const processByOption = (option, allReposFiltered) => {
   if (
     option == "1: Privately check if student repos exist. (No Slack message reminder).") {
     checkReposContinuously(allReposFiltered, 0, false);
@@ -256,7 +256,7 @@ const promptUser = () => {
         }
       }
       
-      process(answers.option, allReposFiltered);
+      processByOption(answers.option, allReposFiltered);
     });
 };
 
