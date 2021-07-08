@@ -5,6 +5,8 @@ const axios = require("axios");
 // Import shelljs to run bash (git) commands
 const shell = require("shelljs");
 
+//const { studentList } = require("./studentList");
+
 const token = process.env.TOKEN;
 const githubUser = process.env.GITUSER;
 const slackToken = process.env.SLACKTOKEN;
@@ -68,7 +70,7 @@ const checkReposContinuously = (studentList, reposSelected, i, slackAlert) => {
     if (reposSelected[i]) {
       checkReposContinuously(studentList, reposSelected, i, slackAlert);
     } else {
-      console.log(`\n\x1b[33m =============== FINISHED ==============\n`);
+      console.log(`\n\x1b[33m ================= FINISHED ==================\n`);
     }
 
   });
@@ -80,18 +82,23 @@ const cloneAndPushRepos = (studentList, allSelectedRepos, i) => {
   let repoUrl = allSelectedRepos[i].url;
 
   console.log(`\n ==================================================`);
-  console.log(`\n ===== Going to try cloning repo '${repoName}' ====`);
+  console.log(` ===== Going to try cloning repo '${repoName}' =====`);
 
   let { stdoutClone, stderrClone, codeClone } = shell.exec(`git clone ${repoUrl}`, { silent: true });
   if (stderrClone) {
-    console.log(`Could not clone ${repoUrl}`, stderrClone);
+    console.log(`\n\x1b[31m Could not clone ${repoUrl}`, stderrClone);
+  }else{
+    console.log(`\n\x1b[32m Clone of ${repoUrl} done`);
   }
 
   // Change branch to main as this is new Github default
   shell.cd(`${repoName}`);
+  console.log(`\n ===== Going to checkout main branch for repo '${repoName}' =====`);
   let { stdoutCheckout, stderrCheckout, codeCheckout } = shell.exec("git checkout -b main", { silent: true });
   if (stderrCheckout) {
-    console.log(`Could not create and switch to main branch`, stderrCheckout);
+    console.log(`\n\x1b[31m Could not create and switch to main branch`, stderrCheckout);
+  }else{
+    console.log(`\n\x1b[32m Checked out main branch`);
   }
 
   
@@ -105,7 +112,7 @@ const cloneAndPushRepos = (studentList, allSelectedRepos, i) => {
 
 const pushRepoToStudents = (studentList, repoName, allSelectedRepos, i) => {
 
-  console.log(`\n ===== Going to try pushing repo '${repoName}' ====`);
+  console.log(`\n ===== Going to try pushing repo '${repoName}' ====\n`);
   // Create a forloop to go through each student
   let repoCheckPromisesPerStudent = [];
   studentList.forEach((student) => {
@@ -126,14 +133,14 @@ const pushRepoToStudents = (studentList, repoName, allSelectedRepos, i) => {
   });
 
   Promise.allSettled(repoCheckPromisesPerStudent).then((result) => {
-    console.log(`\n \x1b[32m ============ FINISHED pushing ${repoName} ============`);
+    console.log(`\n\x1b[32m ============ FINISHED pushing ${repoName} ============`);
 
     // continue to next repo
     i++
     if (allSelectedRepos[i]) {
       cloneAndPushRepos(studentList, allSelectedRepos, i);
     }else{
-      console.log(`\n\x1b[33m =============== FINISHED ==============\n`);
+      console.log(`\n\x1b[33m =================== FINISHED ===================\n`);
     }
   });
 };

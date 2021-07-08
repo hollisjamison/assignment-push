@@ -1,7 +1,13 @@
-const repoDetails = [{
+const repoDetails = [
+    {
+        url: "https://github.com/stackeducation/for-the-empire.git",
+        name: "for-the-empire",
+        skip: true
+    },
+    {
         url: "https://github.com/stackeducation/fantasy-scoring.git",
         name: "fantasy-scoring",
-        skip: false
+        skip: true
     },
     {
         url: "https://github.com/stackeducation/order-book.git",
