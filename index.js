@@ -172,6 +172,25 @@ const setupRepos = (allSelectedRepos) => {
   cloneAndPushRepos(allSelectedRepos, 0);
 };
 
+
+const execute = (option, allReposFiltered) => {
+  if (
+    option == "1: Privately check if student repos exist. (No Slack message reminder).") {
+    checkReposContinuously(allReposFiltered, 0, false);
+
+    // If Option 2 is selected do an alerting check.
+  } else if (option == "2: Check if student repos exist. (With Slack message reminder).") {
+    checkReposContinuously(allReposFiltered, 0, true);
+
+    // If option 3 is selected then clone the assignment then push.
+  } else if (option == "3: Push assignment repo to students.") {
+    setupRepos(allReposFiltered);
+
+    // If option 4 is selected then exit the app.
+  } 
+  return;
+}
+
 // Function that controls interactivity
 const promptUser = () => {
   // Prompt the user to see what kind of app needs to run
@@ -236,24 +255,8 @@ const promptUser = () => {
           return;
         }
       }
-
-
-      if (
-        answers.option == "1: Privately check if student repos exist. (No Slack message reminder).") {
-        checkReposContinuously(allReposFiltered, 0, false);
-
-        // If Option 2 is selected do an alerting check.
-      } else if (answers.option == "2: Check if student repos exist. (With Slack message reminder).") {
-        checkReposContinuously(allReposFiltered, 0, true);
-
-        // If option 3 is selected then clone the assignment then push.
-      } else if (answers.option == "3: Push assignment repo to students.") {
-        setupRepos(allReposFiltered);
-
-        // If option 4 is selected then exit the app.
-      } else {
-        return;
-      }
+      
+      execute(answers.option, allReposFiltered);
     });
 };
 
