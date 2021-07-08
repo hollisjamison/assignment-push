@@ -94,7 +94,7 @@ const checkReposContinuously = (reposSelected, i, slackAlert) => {
   });
 };
 
-const cloneAndPushAssignments = (allSelectedRepos, i) => {
+const cloneAndPushRepos = (allSelectedRepos, i) => {
 
   let repoName = allSelectedRepos[i].name;
   let repoUrl = allSelectedRepos[i].url;
@@ -122,7 +122,7 @@ const cloneAndPushAssignments = (allSelectedRepos, i) => {
   // continue to next repo
   i++
   if (allSelectedRepos[i]) {
-    cloneAndPushAssignments(allSelectedRepos, i);
+    cloneAndPushRepos(allSelectedRepos, i);
   }
 }
 
@@ -169,7 +169,7 @@ const setupRepos = (allSelectedRepos) => {
   // Now clone the repo into repo folder
   shell.cd("repo");
 
-  cloneAndPushAssignments(allSelectedRepos, 0);
+  cloneAndPushRepos(allSelectedRepos, 0);
 };
 
 // Function that controls interactivity
