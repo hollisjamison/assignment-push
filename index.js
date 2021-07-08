@@ -173,7 +173,7 @@ const setupRepos = (allSelectedRepos) => {
 };
 
 
-const execute = (option, allReposFiltered) => {
+const process = (option, allReposFiltered) => {
   if (
     option == "1: Privately check if student repos exist. (No Slack message reminder).") {
     checkReposContinuously(allReposFiltered, 0, false);
@@ -256,7 +256,7 @@ const promptUser = () => {
         }
       }
       
-      execute(answers.option, allReposFiltered);
+      process(answers.option, allReposFiltered);
     });
 };
 
