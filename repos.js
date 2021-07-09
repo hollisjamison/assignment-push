@@ -7,7 +7,7 @@ const repoDetails = [
     {
         url: "https://github.com/stackeducation/fantasy-scoring.git",
         name: "fantasy-scoring",
-        skip: true
+        skip: false
     },
     {
         url: "https://github.com/stackeducation/order-book.git",

@@ -19,11 +19,11 @@ const {findRepoDetailsByName, setupRepos, checkReposContinuously} = require("./r
 const processByOption = (option, allReposFiltered) => {
   if (
     option == "1: Privately check if student repos exist. (No Slack message reminder).") {
-    checkReposContinuously(studentList, allReposFiltered, 0, false);
+    checkReposContinuously(allReposFiltered, 0, false);
 
     // If Option 2 is selected do an alerting check.
   } else if (option == "2: Check if student repos exist. (With Slack message reminder).") {
-    checkReposContinuously(studentList, allReposFiltered, 0, true);
+    checkReposContinuously(allReposFiltered, 0, true);
 
     // If option 3 is selected then clone the assignment then push.
   } else if (option == "3: Push assignment repo to students.") {
