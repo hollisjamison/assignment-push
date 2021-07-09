@@ -120,7 +120,7 @@ const pushRepoToStudents = (studentList, repoName, allSelectedRepos, i) => {
 
       // Force a push of the assignment main repo
 
-      let { stdout, stderr, code } = shell.exec(`git push ${studentUrl}`, { silent: true }); //  --force
+      let { stdout, stderr, code } = shell.exec(`git push ${studentUrl} --force`, { silent: true }); //  --force
       if (stderr) {
         console.log(`\x1b[31m Could not push code to ${student.github} at ${studentUrl}. Error: ${stderr}`);
         //console.log(`\x1b[31m Could not push code to ${student.github} at ${studentUrl}, Maybe they have not yet made the repo yet or you are not collabator on it`);
