@@ -13,6 +13,12 @@ const repoDetails = [
         url: "https://github.com/stackeducation/order-book.git",
         name: "order-book",
         skip: false
-    }];
+    },
+    {
+        url: "https://github.com/stackeducation/password-validator.git",
+        name: "password-validator",
+        skip: false
+    }
+];
 
-module.exports = {repoDetails};
+module.exports = { repoDetails };

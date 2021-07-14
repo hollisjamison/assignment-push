@@ -16,11 +16,11 @@ const { WebClient } = require("@slack/web-api");
 
 const slack = new WebClient(slackToken);
 
-function findRepoDetailsByName(repos, repoNames) {
+function filterArrayBySelectedNames(allItems, selectedNames) {
 
   let allReposFiltered = [];
-  repoNames.forEach(repoName => {
-    let reposFiltered = repos.filter(repo => repo.name === repoName);
+  selectedNames.forEach(repoName => {
+    let reposFiltered = allItems.filter(repo => repo.name === repoName);
     if (reposFiltered.length === 1) {
       allReposFiltered.push(reposFiltered[0]);
     } else {
@@ -29,6 +29,7 @@ function findRepoDetailsByName(repos, repoNames) {
   })
   return allReposFiltered;
 }
+
 
 const checkRepo = (student, repoName, slackAlert, callback, failureCallBack) => {
   return axios.get(`https://github.com/${student.github}/${repoName}`)
@@ -171,4 +172,4 @@ const sendMessage = (slackId, repoName) => {
     });
   })();
 };
-module.exports = { findRepoDetailsByName, setupRepos, checkReposContinuously }
+module.exports = { filterArrayBySelectedNames, setupRepos, checkReposContinuously }
