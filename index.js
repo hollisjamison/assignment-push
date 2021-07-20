@@ -112,7 +112,8 @@ const promptsTypes = [
     type: "checkbox",
     message: "Please select people you want to check or push to",
     choices: ["exit", "all", new inquirer.Separator()].concat(studentList),
-    default: ["all"]
+    default: ["all"],
+    loop: false
   },
   {
     name: "option",
