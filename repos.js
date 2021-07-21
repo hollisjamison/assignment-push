@@ -18,6 +18,11 @@ const repoDetails = [
         url: "https://github.com/stackeducation/password-validator.git",
         name: "password-validator",
         skip: false
+    },
+    {
+        url: "https://github.com/stackeducation/hazy-calculator.git",
+        name: "hazy-calculator",
+        skip: false
     }
 ];
 
