@@ -23,7 +23,30 @@ const repoDetails = [
         url: "https://github.com/stackeducation/hazy-calculator.git",
         name: "hazy-calculator",
         skip: false
+    },
+    {
+        url: "https://github.com/stackeducation/custom-error-page.git",
+        name: "custom-error-page",
+        skip: false
+    },
+    {
+        url: "https://github.com/stackeducation/duck-hunt.git",
+        name: "duck-hunt",
+        skip: false
+    },
+    {
+        url: "https://github.com/stackeducation/custom-error-page.git",
+        name: "custom-error-page",
+        skip: false
+    },
+    {
+        url: "https://github.com/stackeducation/tv-synopsis.git",
+        name: "tv-synopsis",
+        skip: false
     }
+
+
+
 ];
 
 module.exports = { repoDetails };
